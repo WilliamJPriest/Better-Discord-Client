@@ -3,17 +3,26 @@ import { io } from 'socket.io-client';
 
 function App() {
   const [message,setMessage] = useState();
-  const URL = 'http://localhost:3000';
+  const URL = 'http://localhost:4000';
   const socket = io(URL);
-  console.log(socket)
 
   const changeMessage = (e:any) =>{
     setMessage(e.target.value)
 
   }
-  const sendBTN = async() => {
-    console.log(message)
-    console.log(socket)
+  const sendBTN = (e: any) => {
+    // e.preventDefault();    
+    socket.on('hello', (arg)=>{
+      console.log(arg,`
+
+      ___  _____  ___  _  _  ____  ____    ____  ___  
+     / __)(  _  )/ __)( )/ )( ___)(_  _)  (_  _)/ _ \ 
+     \__ \ )(_)(( (__  )  (  )__)   )(     _)(_( (_) )
+     (___/(_____)\___)(_)\_)(____) (__)   (____)\___/ 
+     
+     
+            `)
+    });
   }
 
 
