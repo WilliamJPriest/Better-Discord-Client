@@ -1,14 +1,16 @@
 import {useEffect, useState} from 'react'
 import { io } from 'socket.io-client';
+import "./App.css"
 
 function App() {
-  const [message,setMessage] = useState();
+  const [message,setMessage] = useState("");
+  const [recMessage,setRecMessage] = useState("")
   const URL = 'http://localhost:4000';
   const socket = io(URL);
 
     useEffect(() =>{
       socket.on('recmessage', (arg:any)=>{
-        console.log(arg)})   
+        setRecMessage(arg)})   
         return () => {
           socket.close();
         }
@@ -34,10 +36,9 @@ function App() {
 
   return (
     <>
-    <section>
-      <article>
-        
-
+    <section className='flex justify-center text-center mx-auto'>
+      <article> 
+        <p className='color-red-800'>{recMessage}</p>
       </article>
       <article>
         <form >
