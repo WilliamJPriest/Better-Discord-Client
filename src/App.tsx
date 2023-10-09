@@ -67,7 +67,7 @@ return (
         <button onClick={(sendBTN)}>send</button>
         
       </form>
-      <p>{currentUser.name}</p>
+      <p></p>{currentUser.name}
     </article>
   </section> 
   : 
