@@ -3,29 +3,43 @@ import { io } from 'socket.io-client';
 import "./App.css"
 
 function App() {
-  const [message,setMessage] = useState("");
-  const [recMessage,setRecMessage] = useState("")
+  const [nameSet,setNameSet]= useState(false)
+  const [currentUser, setCurrentUser]= useState({
+      name: "",
+      message:"",
+      room:"",
+  })
+  
+  const [otherUser, setOtherUser]= useState({
+    name: "",
+    message:"",
+    room:"",
+})
   const URL = 'http://localhost:4000';
   const socket = io(URL);
 
     useEffect(() =>{
       socket.on('recmessage', (arg:any)=>{
-        setRecMessage(arg)})   
+        setOtherUser(arg)})   
         return () => {
           socket.close();
         }
       }, [socket]);
 
-  const changeMessage = (e:any) =>{
-    setMessage(e.target.value)
+  const changeHandler = async(e:any) =>{
+    setCurrentUser({
+      ...currentUser,
+      [e.target.name]: e.target.value,
+    
+  })  
+}
 
-  }
   const sendBTN =  (e:any) => {
     e.preventDefault()
 
 
    try{
-      socket.emit("message", message)
+      socket.emit("message", currentUser)
     }
     catch(err){
       console.log(err)
@@ -33,22 +47,46 @@ function App() {
 
   }
 
+  const setNameBTN =  async (e:any) => {
+    e.preventDefault();
+    setNameSet(true)
 
-  return (
-    <>
-    <section className='flex justify-center text-center mx-auto'>
-      <article> 
-        <p className='color-red-800'>{recMessage}</p>
-      </article>
-      <article>
-        <form >
-          <input value={message} onChange={ e => changeMessage(e)} placeholder="send a message"></input>
-          <button onClick={(sendBTN)}>send</button>
-        </form>
-      </article>
-    </section>
-    </>
-  )
+  }
+
+
+return (
+  <>
+
+  {nameSet ?   <section className='flex justify-center text-center mx-auto'>
+    <article> 
+      <p className='color-red-800'>{otherUser.name} {otherUser.message}</p>
+    </article>
+    <article>
+      <form >
+        <input value={currentUser.message} onChange={changeHandler} name="message" placeholder="send a message"></input>
+        <button onClick={(sendBTN)}>send</button>
+        
+      </form>
+      <p>{currentUser.name}</p>
+    </article>
+  </section> 
+  : 
+  <section className='flex justify-center text-center mx-auto'>
+    {/* <article> 
+      <p className='color-red-800'>{recMessage}</p>
+    </article> */}
+    <article>
+      <form >
+        <input value={currentUser.name} onChange={changeHandler} name="name" placeholder="set name"></input>
+        <button onClick={(setNameBTN)}>set name</button>
+      </form>
+    </article>
+  </section>
+}
+
+      
+  </>
+)
 }
 
 export default App
