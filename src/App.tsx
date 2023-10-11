@@ -2,25 +2,44 @@ import {useEffect, useState} from 'react'
 import { io } from 'socket.io-client';
 import "./App.css"
 
+//todos
+// dynamic id sending instead of general sending
+// list of users
+// chatlogs
+// Database??
+// MultiPage?? can try Context API, possibly.
+
 function App() {
   const [nameSet,setNameSet]= useState(false)
   const [currentUser, setCurrentUser]= useState({
       name: "",
       message:"",
+      socket_id:"",
       room:"",
   })
   
   const [otherUser, setOtherUser]= useState({
     name: "",
     message:"",
+    socket_id:"",
     room:"",
 })
+
+const [online,setOnline]= useState([])
+
   const URL = 'http://localhost:4000';
   const socket = io(URL);
 
     useEffect(() =>{
+
       socket.on('recmessage', (arg:any)=>{
-        setOtherUser(arg)})   
+        setOtherUser(arg)})
+        
+      socket.on('onlineU', (duh:any)=>{
+        setOnline(duh)
+        console.log(duh)
+      })   
+
         return () => {
           socket.close();
         }
@@ -47,12 +66,12 @@ function App() {
 
   }
 
-  const setNameBTN =  async (e:any) => {
+  const setNameBTN =  (e:any) => {
     e.preventDefault();
     setNameSet(true)
+    socket.emit("online", currentUser.name)
 
   }
-
 
 return (
   <>
@@ -67,8 +86,9 @@ return (
         <button onClick={(sendBTN)}>send</button>
         
       </form>
-      <p></p>{currentUser.name}
+      <p>{currentUser.name}{online}</p>
     </article>
+    
   </section> 
   : 
   <section className='flex justify-center text-center mx-auto'>
