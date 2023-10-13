@@ -1,7 +1,12 @@
 import {useEffect, useState} from 'react'
-import {socket} from "../Services/socket"
+// import {socket} from "../Services/socket"
+import io from "socket.io-client";
+
+// export default socket;
 
 export default function Chat() {
+    const SOCKET_URL = 'http://localhost:4000';
+    const socket = io(SOCKET_URL)
     const [nameSet,setNameSet]= useState(false)
     const [currentUser, setCurrentUser]= useState({
         name: "",
@@ -23,11 +28,12 @@ export default function Chat() {
   
         socket.on('recmessage', (arg:any)=>{
           setOtherUser(arg)})
-          
-        socket.on('onlineU', (duh:any)=>{
-          setOnline(duh)
-          console.log(duh)
-        })   
+
+          socket.on('onlineU', (duh:any)=>{
+            setOnline(duh)
+            console.log(online)
+          })  
+           
   
           return () => {
             socket.close();
@@ -56,7 +62,7 @@ export default function Chat() {
   
     }
   
-    const setNameBTN =  (e:any) => {
+    const setNameBTN =  async (e:any) => {
       e.preventDefault();
       setNameSet(true)
       socket.emit("online", currentUser.name)
@@ -77,7 +83,14 @@ export default function Chat() {
           
         </form>
         <p>{currentUser.name}</p>
-        <p>{online}</p>
+        {/* {online.length > 0 && (
+          <div>
+            {online.map(user => (
+              <p>{user.name}</p>
+           ) )}
+          </div>
+        )}
+        <p></p> */}
       </article>
       
     </section> 
@@ -90,6 +103,7 @@ export default function Chat() {
         <form >
           <input value={currentUser.name} onChange={changeHandler} name="name" placeholder="set name"></input>
           <button onClick={(setNameBTN)}>set name</button>
+
         </form>
       </article>
     </section>
@@ -98,3 +112,7 @@ export default function Chat() {
         
     </>
   )}
+// function user(user: any): import("react").ReactNode {
+//   throw new Error('Function not implemented.');
+// }
+
