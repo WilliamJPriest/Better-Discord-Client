@@ -1,5 +1,5 @@
 import {useEffect, useState} from 'react'
-import { io } from 'socket.io-client';
+import {socket} from "../Services/socket"
 
 export default function Chat() {
     const [nameSet,setNameSet]= useState(false)
@@ -16,11 +16,8 @@ export default function Chat() {
       socket_id:"",
       room:"",
   })
-  
-  const [online,setOnline]= useState([])
-  
-    const URL = 'http://localhost:4000';
-    const socket = io(URL);
+
+    const [online,setOnline]= useState([])
   
       useEffect(() =>{
   
@@ -47,9 +44,10 @@ export default function Chat() {
   
     const sendBTN =  (e:any) => {
       e.preventDefault()
-  
+      console.log(socket)
   
      try{
+        
         socket.emit("message", currentUser)
       }
       catch(err){
@@ -70,7 +68,7 @@ export default function Chat() {
   
     {nameSet ?   <section className='flex justify-center text-center mx-auto'>
       <article> 
-        <p className='color-red-800'>{otherUser.name} {otherUser.message}</p>
+        <p className='color-red-800'>{otherUser.name} said {otherUser.message}</p>
       </article>
       <article>
         <form >
@@ -78,7 +76,8 @@ export default function Chat() {
           <button onClick={(sendBTN)}>send</button>
           
         </form>
-        <p>{currentUser.name}{online}</p>
+        <p>{currentUser.name}</p>
+        <p>{online}</p>
       </article>
       
     </section> 
