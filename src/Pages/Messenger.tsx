@@ -1,5 +1,5 @@
 import 'react'
-import Chat from "../components/chat"
+import Chat from "../Components/Chat"
 
 export default function Messenger() {
   return (

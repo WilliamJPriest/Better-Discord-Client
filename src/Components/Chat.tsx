@@ -8,6 +8,7 @@ export default function Chat() {
     const SOCKET_URL = 'http://localhost:4000';
     const socket = io(SOCKET_URL)
     const [nameSet,setNameSet]= useState(false)
+    const [tacosSet,setTacosSet]= useState("hi")
     const [currentUser, setCurrentUser]= useState({
         name: "",
         message:"",
@@ -22,21 +23,28 @@ export default function Chat() {
       room:"",
   })
 
-    const [online,setOnline]= useState([])
-  
-      useEffect(() =>{
-  
-        socket.on('recmessage', (arg:any)=>{
-          setOtherUser(arg)})
+    const [online,setOnline]= useState([]) 
 
-          socket.on('onlineU', (duh:any)=>{
-            setOnline(duh)
+
+
+
+      useEffect(() =>{
+        
+        socket.on('recmessage', (arg:any, tacos)=>{
+          setTacosSet(tacos)
+          setOtherUser(arg)
+        })
+
+        socket.on('onlineU', (user) => {
+            console.log(user);
+            setOnline(user)
             console.log(online)
-          })  
-           
+         });
+      
   
           return () => {
-            socket.close();
+            socket.off('recmessage');
+            socket.off('onlineU');
           }
         }, [socket]);
   
@@ -50,7 +58,6 @@ export default function Chat() {
   
     const sendBTN =  (e:any) => {
       e.preventDefault()
-      console.log(socket)
   
      try{
         
@@ -83,14 +90,16 @@ export default function Chat() {
           
         </form>
         <p>{currentUser.name}</p>
-        {/* {online.length > 0 && (
-          <div>
-            {online.map(user => (
-              <p>{user.name}</p>
-           ) )}
-          </div>
-        )}
-        <p></p> */}
+        <p>{tacosSet}</p>
+
+  
+        <div>
+          {online.map(user => (
+            <div key={user}>
+              <p>{user}</p>
+            </div>
+          ) )}
+        </div>
       </article>
       
     </section> 
