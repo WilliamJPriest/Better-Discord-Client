@@ -5,13 +5,19 @@ import {socket} from "../socket"
 // export default socket;
 
 export default function Chat() {
+
+
+    // interface setUsers{
+    //   userID?: string;
+    //   username?: string;
+    // }
     // const SOCKET_URL = 'http://localhost:4000';
     // const socket = io(SOCKET_URL,{ autoConnect: false })
     const [nameSet,setNameSet]= useState(false)
-    const [user,setUser] = useState({})
+    const [users,setUsers] = useState<any[]>([])
     // const [users,setUsers] = useState([{}])
-    const users: any[] = []
-    const [tacosSet,setTacosSet]= useState("hi")
+    // const allUsers: any[] = []
+    // const [tacosSet,setTacosSet]= useState("hi")
     const [username,setUserName] = useState()
     // const [currentUser, setCurrentUser]= useState({
     //     name: "",
@@ -20,19 +26,18 @@ export default function Chat() {
     //     room:"",
     // })
     
-    const [otherUser, setOtherUser]= useState({
-      name: "",
-      message:"",
-      socket_id:"",
-      room:"",
-  })
+  //   const [otherUser, setOtherUser]= useState({
+  //     name: "",
+  //     message:"",
+  //     socket_id:"",
+  //     room:"",
+  // })
 
-    const [online,setOnline]= useState({
-      name: "",
-      message:"",
-      socket_id:"",
-      room:"",
-    }) 
+//     const [online,setOnline]= useState([{     
+//       usedID: "",
+//       username: "",
+
+// }]) 
 
     // socket.onAny((event, ...args) => {
     //   console.log(event, args);
@@ -60,28 +65,16 @@ export default function Chat() {
         //   setOtherUser(arg)
         // })
 
-        socket.on("users", (users) => {
-          // console.log(users)
-          users.forEach((user: {userID: string; }) => {
-            user.userID === socket.id;
-            setUser(user)
-          
-          })
-        });
-
-        socket.on("user connected", (user) => {
-          users.push(user)
-          console.log(user)
-        });
-        
+        socket.on("users", (users) => setUsers(users))
+         
         
 
 
       
   
           return () => {
-            socket.off("users");
-            socket.off("user connected");
+            // socket.off("users");
+            // socket.off("user connected");
           }
         }, [socket]);
 
@@ -122,7 +115,7 @@ export default function Chat() {
   
     {nameSet ?   <section className='flex justify-center text-center mx-auto'>
       <article> 
-        <p className='color-red-800'>{otherUser.name} said {otherUser.message}</p>
+        {/* <p className='color-red-800'>{otherUser.name} said {otherUser.message}</p> */}
       </article>
       <article>
         <form >
@@ -131,8 +124,10 @@ export default function Chat() {
           
         </form>
         {/* <p>{currentUser.name}</p> */}
-        <p>{tacosSet}</p>
-        <p>{online.name}</p>
+        {/* <p>{tacosSet}</p> */}
+        {users.map((user) => (
+            <p key={user.userID}>{user.username}</p>
+          ))}
 
   
       </article>
