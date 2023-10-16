@@ -11,20 +11,19 @@ export default function Chat() {
     //   userID?: string;
     //   username?: string;
     // }
-    // const SOCKET_URL = 'http://localhost:4000';
-    // const socket = io(SOCKET_URL,{ autoConnect: false })
+
     const [nameSet,setNameSet]= useState(false)
     const [users,setUsers] = useState<any[]>([])
-    // const [users,setUsers] = useState([{}])
-    // const allUsers: any[] = []
-    // const [tacosSet,setTacosSet]= useState("hi")
+    const [receiver,setReceiver] = useState("")
+    const [messages,setMessages] = useState("")
+    // Later combine receiver and messages
     const [username,setUserName] = useState()
-    // const [currentUser, setCurrentUser]= useState({
-    //     name: "",
-    //     message:"",
-    //     socket_id:"",
-    //     room:"",
-    // })
+  //   const [currentUser, setCurrentUser]= useState({
+  //       name: "",
+  //       message:"",
+  //       socket_id:"",
+  //       room:"",
+  //   })
     
   //   const [otherUser, setOtherUser]= useState({
   //     name: "",
@@ -39,9 +38,9 @@ export default function Chat() {
 
 // }]) 
 
-    // socket.onAny((event, ...args) => {
-    //   console.log(event, args);
-    // });
+    socket.onAny((event, ...args) => {
+      console.log(event, args);
+    });
 
     socket.on("connect_error", (err) => {
       if (err.message === "invalid username") {
@@ -53,53 +52,65 @@ export default function Chat() {
 
       useEffect(() =>{
 
-        // socket.on('onlineU', (user) => {
-        //   console.log("Received user data:", user);
-        //   setOnline(user);
-        //   console.log(online)
-        //   // console.log(online); // You might not see the updated value here
-        // });
-
         // socket.on('recmessage', (arg:any, tacos)=>{
         //   setTacosSet(tacos)
         //   setOtherUser(arg)
         // })
 
         socket.on("users", (users) => setUsers(users))
+
+        socket.emit("user connected", (users))
          
-        
+        socket.on("private message",(content) => setMessages(content))
 
 
       
   
           return () => {
-            // socket.off("users");
-            // socket.off("user connected");
+            socket.off("users");
+            socket.off("user connected");
+            socket.off("private message");
           }
         }, [socket]);
 
 
         
   
-    const changeHandler = async(e:any) =>{
+    const changeNameHandler = async(e:any) =>{
     //   setCurrentUser({
     //     ...currentUser,
     //     [e.target.name]: e.target.value,
     // })  
     setUserName(e.target.value)
+
   }
-  
+
+    const changeMessageHandler = async(e:any) =>{
+      //   setCurrentUser({
+      //     ...currentUser,
+      //     [e.target.name]: e.target.value,
+      // })  
+      
+      setMessages(e.target.value)
+    }
+    
     const sendBTN =  (e:any) => {
       e.preventDefault()
   
-    //  try{
-        
-    //     socket.emit("message", currentUser)
-    //   }
-    //   catch(err){
-    //     console.log(err)
-    //   }
+      socket.emit("private message", {
+        messages,
+        to: receiver
+      });
+      // selectedUser.messages.push({
+      //   content,
+      //   fromSelf: true,
+      // });
   
+    }
+
+    const selectUser = (e:any) =>{
+      setReceiver(e.target.getAttribute("data-id"))
+      console.log(receiver)
     }
   
     const setNameBTN =  (e:any) => {
@@ -115,18 +126,18 @@ export default function Chat() {
   
     {nameSet ?   <section className='flex justify-center text-center mx-auto'>
       <article> 
-        {/* <p className='color-red-800'>{otherUser.name} said {otherUser.message}</p> */}
+        <p className='color-red-800'>{messages}</p>
       </article>
       <article>
         <form >
-          {/* <input value={currentUser.message} onChange={changeHandler} name="message" placeholder="send a message"></input> */}
+          <input value={messages} onChange={changeMessageHandler} name="message" placeholder="send a message"></input>
           <button onClick={(sendBTN)}>send</button>
           
         </form>
-        {/* <p>{currentUser.name}</p> */}
+        {/* <p>{messages}</p> */}
         {/* <p>{tacosSet}</p> */}
         {users.map((user) => (
-            <p key={user.userID}>{user.username}</p>
+            <p  onClick={(selectUser)} data-id={user.userID}>{user.username}</p>
           ))}
 
   
@@ -140,7 +151,7 @@ export default function Chat() {
       </article> */}
       <article>
         <form >
-          <input value={username} onChange={changeHandler} name="name" placeholder="set name"></input>
+          <input value={username} onChange={changeNameHandler} name="name" placeholder="set name"></input>
           <button onClick={(setNameBTN)}>set name</button>
 
         </form>
@@ -151,7 +162,3 @@ export default function Chat() {
         
     </>
   )}
-// function user(user: any): import("react").ReactNode {
-//   throw new Error('Function not implemented.');
-// }
-
