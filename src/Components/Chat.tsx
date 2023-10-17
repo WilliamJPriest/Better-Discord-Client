@@ -61,7 +61,7 @@ export default function Chat() {
 
         socket.emit("user connected", (users))
          
-        socket.on("private message",(content) => setMessages(content))
+        socket.on("private messages",(content) => setMessages(content))
 
 
       
