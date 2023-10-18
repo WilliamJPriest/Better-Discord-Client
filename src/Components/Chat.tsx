@@ -16,6 +16,7 @@ export default function Chat() {
     const [users,setUsers] = useState<any[]>([])
     const [receiver,setReceiver] = useState("")
     const [messages,setMessages] = useState("")
+    const [recMessage,setRecMessage]= useState("")
     // Later combine receiver and messages
     const [username,setUserName] = useState()
   //   const [currentUser, setCurrentUser]= useState({
@@ -59,9 +60,10 @@ export default function Chat() {
 
         socket.on("users", (users) => setUsers(users))
 
-        socket.emit("user connected", (users))
+        // socket.emit("user connected", (users))
          
-        socket.on("private messages",(content) => setMessages(content))
+        socket.on("privateMessages",(content) => setRecMessage(content))
+        console.log(recMessage + "hello")
 
 
       
@@ -69,7 +71,7 @@ export default function Chat() {
           return () => {
             socket.off("users");
             socket.off("user connected");
-            socket.off("private message");
+            socket.off("privateMessages");
           }
         }, [socket]);
 
@@ -92,12 +94,13 @@ export default function Chat() {
       // })  
       
       setMessages(e.target.value)
+      console.log(messages)
     }
     
     const sendBTN =  (e:any) => {
       e.preventDefault()
-  
-      socket.emit("private message", {
+      console.log(messages)
+      socket.emit("privateMessage", {
         messages,
         to: receiver
       });
@@ -126,21 +129,18 @@ export default function Chat() {
   
     {nameSet ?   <section className='flex justify-center text-center mx-auto'>
       <article> 
-        <p className='color-red-800'>{messages}</p>
+        <p className='color-red-800'>{recMessage}</p>
       </article>
       <article>
         <form >
-          <input value={messages} onChange={changeMessageHandler} name="message" placeholder="send a message"></input>
+          <input  onChange={changeMessageHandler} name="message" placeholder="send a message"></input>
           <button onClick={(sendBTN)}>send</button>
           
         </form>
-        {/* <p>{messages}</p> */}
-        {/* <p>{tacosSet}</p> */}
         {users.map((user) => (
             <p  onClick={(selectUser)} data-id={user.userID}>{user.username}</p>
           ))}
 
-  
       </article>
       
     </section> 
