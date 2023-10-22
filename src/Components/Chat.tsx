@@ -1,10 +1,22 @@
 import {useEffect, useState} from 'react'
 import {socket} from "../socket"
-// import io from "socket.io-client";
-
-// export default socket;
 
 export default function Chat() {
+
+
+    // Bugs to Fix
+    // 1. Doesn't show all users online, if a new user joins an existing session
+    // 2. sometimes shows the same user twice
+    // 3. session keys probably needed
+    // 4. Profit?
+
+
+    //Plans
+    //1. Have user click on name to enter a chat with that person
+    //2. display online or not
+    //3. mulitple message logs
+    //4. Group chats
+    //5. Be Better than Discord lol
 
 
     // interface setUsers{
