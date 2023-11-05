@@ -4,25 +4,6 @@ import {socket} from "../socket"
 export default function Chat() {
 
 
-    // Bugs to Fix
-    // 1. Doesn't show all users online, if a new user joins an existing session
-    // 2. sometimes shows the same user twice
-    // 3. session keys probably needed
-    // 4. Profit?
-
-
-    //Plans
-    //1. Have user click on name to enter a chat with that person
-    //2. display online or not
-    //3. mulitple message logs
-    //4. Group chats
-    //5. Be Better than Discord lol
-
-
-    // interface setUsers{
-    //   userID?: string;
-    //   username?: string;
-    // }
 
     const [nameSet,setNameSet]= useState(false)
     const [users,setUsers] = useState<any[]>([])
@@ -31,25 +12,7 @@ export default function Chat() {
     const [recMessage,setRecMessage]= useState("")
     // Later combine receiver and messages
     const [username,setUserName] = useState()
-  //   const [currentUser, setCurrentUser]= useState({
-  //       name: "",
-  //       message:"",
-  //       socket_id:"",
-  //       room:"",
-  //   })
-    
-  //   const [otherUser, setOtherUser]= useState({
-  //     name: "",
-  //     message:"",
-  //     socket_id:"",
-  //     room:"",
-  // })
 
-//     const [online,setOnline]= useState([{     
-//       usedID: "",
-//       username: "",
-
-// }]) 
 
     socket.onAny((event, ...args) => {
       console.log(event, args);
@@ -62,31 +25,23 @@ export default function Chat() {
     });
 
 
+  socket.on("users", (users) => setUsers(users))
 
-      useEffect(() =>{
+  useEffect(() => {
 
-        // socket.on('recmessage', (arg:any, tacos)=>{
-        //   setTacosSet(tacos)
-        //   setOtherUser(arg)
-        // })
+    socket.on("users", (users) => setUsers(users));
 
-        socket.on("users", (users) => setUsers(users))
-
-        // socket.emit("user connected", (users))
-         
-        socket.on("privateMessages",(content) => setRecMessage(content))
-        console.log(recMessage + "hello")
+    socket.on("privateMessages",(content) => setRecMessage(content))
+    console.log(recMessage + "hello")
 
 
-      
-  
-          return () => {
-            socket.off("users");
-            socket.off("user connected");
-            socket.off("privateMessages");
-          }
-        }, [socket]);
 
+    return () => {
+      socket.off("users");
+      socket.off("user connected");
+      socket.off("privateMessages");
+    };
+  }, [socket]);
 
         
   
@@ -150,8 +105,10 @@ export default function Chat() {
           
         </form>
         {users.map((user) => (
-            <p  onClick={(selectUser)} data-id={user.userID}>{user.username}</p>
-          ))}
+                <p onClick={selectUser} data-id={user.userID} key={user.userID}>
+                  {user.username}
+                </p>
+              ))}
 
       </article>
       
