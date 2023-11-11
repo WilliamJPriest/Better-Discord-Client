@@ -1,3 +1,3 @@
 # **Better Discord**
 
-test
+The best messenger not on the web yet.
