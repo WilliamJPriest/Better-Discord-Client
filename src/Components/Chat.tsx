@@ -6,7 +6,7 @@ export default function Chat() {
 
 
     const [nameSet,setNameSet]= useState(false)
-    const [users,setUsers] = useState<any[]>([])
+    const [userss,setUsers] = useState<any[]>([])
     const [receiver,setReceiver] = useState("")
     const [messages,setMessages] = useState("")
     const [recMessage,setRecMessage]= useState("")
@@ -25,8 +25,6 @@ export default function Chat() {
     });
 
 
-  socket.on("users", (users) => setUsers(users))
-
   useEffect(() => {
 
     socket.on("users", (users) => setUsers(users));
@@ -42,6 +40,7 @@ export default function Chat() {
       socket.off("privateMessages");
     };
   }, [socket]);
+
 
         
   
@@ -104,7 +103,7 @@ export default function Chat() {
           <button onClick={(sendBTN)}>send</button>
           
         </form>
-        {users.map((user) => (
+        {userss.map((user) => (
                 <p onClick={selectUser} data-id={user.userID} key={user.userID}>
                   {user.username}
                 </p>
