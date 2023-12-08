@@ -2,7 +2,9 @@ import {useEffect, useState} from 'react'
 import {socket} from "../socket"
 
 export default function Chat() {
-
+//display your name as you
+//message select users and groups
+//style content
 
 
     const [nameSet,setNameSet]= useState(false)
